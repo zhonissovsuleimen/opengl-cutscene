@@ -1,11 +1,13 @@
 #pragma once
 
+#include "../scene/scene.h"
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 
 class Renderer {
   private:
   GLFWwindow *window;
+  Scene *scene;
 
   GLuint vao;
   GLuint vbo;
@@ -15,5 +17,6 @@ class Renderer {
 
   public:
   bool init();
+  void setScene(Scene *scene);
   bool render();
 };
