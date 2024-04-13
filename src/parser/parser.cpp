@@ -288,30 +288,7 @@ bool Parser::parse(std::string filename){
 
   fileStream.close();
 }
-void Parser::interpolate(){
-  float min_x = std::numeric_limits<float>::max();
-  float max_x = std::numeric_limits<float>::min();
-  float min_y = std::numeric_limits<float>::max();
-  float max_y = std::numeric_limits<float>::min();
-
-  for(const Triangle& triangle : this->triangles){
-    min_x = std::min(min_x, std::min(triangle.v1.x, std::min(triangle.v2.x, triangle.v3.x)));
-    max_x = std::max(max_x, std::max(triangle.v1.x, std::max(triangle.v2.x, triangle.v3.x)));
-    min_y = std::min(min_y, std::min(triangle.v1.y, std::min(triangle.v2.y, triangle.v3.y)));
-    max_y = std::max(max_y, std::max(triangle.v1.y, std::max(triangle.v2.y, triangle.v3.y)));
-  }
-
-  for(Triangle& triangle : this->triangles){
-    triangle.v1.x = (triangle.v1.x - min_x) / (max_x - min_x);
-    triangle.v1.y = (triangle.v1.y - min_y) / (max_y - min_y);
-    triangle.v2.x = (triangle.v2.x - min_x) / (max_x - min_x);
-    triangle.v2.y = (triangle.v2.y - min_y) / (max_y - min_y);
-    triangle.v3.x = (triangle.v3.x - min_x) / (max_x - min_x);
-    triangle.v3.y = (triangle.v3.y - min_y) / (max_y - min_y);
-  }
-}
 
 std::vector<Triangle>& Parser::getTriangles() {
-  interpolate();
   return triangles;
 }
