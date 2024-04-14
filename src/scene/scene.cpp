@@ -6,13 +6,10 @@
 #include "../util/mat4.h"
 #include <iostream>
 
-
 Scene::Scene() {
   modelMatrix = Mat4::identity();
 
-  //temp camera values
-  viewMatrix = Mat4::lookAt(Vect{0.0f, 0.0f, 0.0f}, Vect{0.0f, 0.0f, 1.0f}, Vect{0.0f, 1.0f, 0.0f});
-
+  //canonical view volume
   float l = -1.0f;
   float r = 1.0f;
   float t = 1.0f;

@@ -95,6 +95,7 @@ bool Renderer::init() {
   
   glGenBuffers(1, &vbo);
   glGenVertexArrays(1, &vao);
+  time = 0.0f;
 
   return true;
 }
@@ -120,13 +121,14 @@ void Renderer::setScene(Scene *scene) {
 }
 
 bool Renderer::render() {
-
   int location = glGetUniformLocation(shaderProgram, "modelMatrix");
-  glUniformMatrix4fv(location, 1, GL_FALSE, scene->modelMatrix.data);
+  glUniformMatrix4fv(location, 1, GL_FALSE, scene->getModelMatrix().data);
   location = glGetUniformLocation(shaderProgram, "viewMatrix");
-  glUniformMatrix4fv(location, 1, GL_FALSE, scene->viewMatrix.data);
+  glUniformMatrix4fv(location, 1, GL_FALSE, scene->getViewMatrix().data);
   location = glGetUniformLocation(shaderProgram, "projectionMatrix");
-  glUniformMatrix4fv(location, 1, GL_FALSE, scene->projectionMatrix.data);
+  glUniformMatrix4fv(location, 1, GL_FALSE, scene->getProjectionMatrix().data);
+  location = glGetUniformLocation(shaderProgram, "time");
+  glUniform1f(location, time);
 
   if (!glfwWindowShouldClose(window)) {
     static const float black[] = {0.0f, 0.0f, 0.0f, 0.0f};
@@ -138,6 +140,7 @@ bool Renderer::render() {
     glfwSwapBuffers(window);
     glfwPollEvents();
 
+    time+= .01;
     return true;
   } else {
     glfwDestroyWindow(window);

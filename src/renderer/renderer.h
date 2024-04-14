@@ -8,6 +8,7 @@ class Renderer {
   private:
   GLFWwindow *window;
   Scene *scene;
+  GLfloat time;
 
   GLuint vao;
   GLuint vbo;
