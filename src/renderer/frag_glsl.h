@@ -4,13 +4,11 @@ const char *FRAGMENT_SHADER = R"(
 
 #version 410 core
 
-in vec2 texCoord;
-uniform sampler2D tex;
-
+in vec3 vColor;
 out vec4 fColor;
 
 void main() {
-	fColor = texture(tex, texCoord);
+	fColor = vec4(vColor, 1.0);
 }
 
 
