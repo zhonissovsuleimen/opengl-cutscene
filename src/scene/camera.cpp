@@ -1,21 +1,19 @@
 #pragma once
 
+#include "../util/definitions.h"
 #include "camera.h"
+#include <glm/gtc/matrix_transform.hpp>
 
 Camera::Camera() {
-  position = Vect(0.0f, 0.0f, 0.0f);
-  direction = Vect(0.0f, 0.0f, 1.0f);
-  up = Vect(0.0f, 1.0f, 0.0f);
-  focalLength = 1.2f;
-  time = 0.0f;
+  position = glm::vec3(0.0f, 0.0f, 0.0f);
+  direction = glm::vec3(0.0f, 0.0f, 1.0f);
+  up = glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
-Camera::Camera(Vect position, Vect direction, Vect up) {
+Camera::Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up) {
   this->position = position;
   this->direction = direction;
   this->up = up;
-  focalLength = 1.2f;
-  time = 0.0f;
 }
 
 void Camera::setTime(float time) {
@@ -25,6 +23,10 @@ void Camera::setTime(float time) {
   this->time = time;
 }
 
-Mat4 Camera::getViewMatrix() {
-  return Mat4::lookAt(position, direction, up);
+glm::mat4x4 Camera::getViewMatrix() {
+  return glm::lookAt(position, direction, up);
+}
+
+glm::mat4x4 Camera::getProjectionMatrix() {
+  return glm::perspective(glm::radians(fov), (float)WIDTH/HEIGHT, frustumNear, frustumFar);
 }

@@ -9,6 +9,7 @@
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <iostream>
+#include <glm/gtc/type_ptr.hpp>
 
 GLint shaderProgram;
 
@@ -90,6 +91,7 @@ bool Renderer::init() {
 
   glewExperimental = GL_TRUE;
   glewInit();
+  glEnable(GL_DEPTH_TEST); // fixes issues with depth 
   
   if (!initShaders()){ return false; }
   
@@ -122,17 +124,16 @@ void Renderer::setScene(Scene *scene) {
 
 bool Renderer::render() {
   int location = glGetUniformLocation(shaderProgram, "modelMatrix");
-  glUniformMatrix4fv(location, 1, GL_FALSE, scene->getModelMatrix().data);
+  glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
   location = glGetUniformLocation(shaderProgram, "viewMatrix");
-  glUniformMatrix4fv(location, 1, GL_FALSE, scene->getViewMatrix().data);
+  glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(scene->camera.getViewMatrix()));
   location = glGetUniformLocation(shaderProgram, "projectionMatrix");
-  glUniformMatrix4fv(location, 1, GL_FALSE, scene->getProjectionMatrix().data);
+  glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(scene->camera.getProjectionMatrix()));
   location = glGetUniformLocation(shaderProgram, "time");
   glUniform1f(location, time);
 
   if (!glfwWindowShouldClose(window)) {
-    static const float black[] = {0.0f, 0.0f, 0.0f, 0.0f};
-    glClearBufferfv(GL_COLOR, 0, black);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     GLsizei vertexCount = scene->triangles.size()* 3;
     glDrawArrays(GL_TRIANGLES, 0, vertexCount);
