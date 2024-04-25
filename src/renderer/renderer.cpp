@@ -3,7 +3,6 @@
 #include "renderer.h"
 #include "vert_glsl.h"
 #include "frag_glsl.h"
-#include "../parser/parser.h"
 #include "../util/definitions.h"
 
 #include <GL/glew.h>
@@ -92,40 +91,21 @@ bool Renderer::init() {
   glewExperimental = GL_TRUE;
   glewInit();
   glEnable(GL_DEPTH_TEST); // fixes issues with depth 
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glEnable(GL_BLEND); 
   
   if (!initShaders()){ return false; }
   
   glGenBuffers(1, &vbo);
   glGenVertexArrays(1, &vao);
-  time = 0.0f;
+  glGenTextures(1, &tex);
 
   return true;
 }
 
-void Renderer::setScene(Scene *scene) {
-  this->scene = scene;
-  glBindVertexArray(vao);
-  glBindBuffer(GL_ARRAY_BUFFER, vbo);
-  GLsizei vertexCount = scene->triangles.size()* 3;
-
-  int stride = 8 * sizeof(GLfloat);
-  glBufferData(GL_ARRAY_BUFFER, vertexCount * stride, scene->triangles.data(), GL_STATIC_DRAW);
-
-  int offset = 3 * sizeof(GLfloat);
-  int offset2 = 6 * sizeof(GLfloat);
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void *)0);
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void *)offset);
-  glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void *)offset2);
-
-  glEnableVertexAttribArray(0);
-  glEnableVertexAttribArray(1);
-  glEnableVertexAttribArray(2);
-}
-
-bool Renderer::render() {
-  int location = glGetUniformLocation(shaderProgram, "modelMatrix");
-  glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(glm::mat4(1.0f)));
-  location = glGetUniformLocation(shaderProgram, "viewMatrix");
+bool Renderer::renderScene(Scene *scene) {
+  scene->camera.position.z -= 0.01f;
+  int location = glGetUniformLocation(shaderProgram, "viewMatrix");
   glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(scene->camera.getViewMatrix()));
   location = glGetUniformLocation(shaderProgram, "projectionMatrix");
   glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(scene->camera.getProjectionMatrix()));
@@ -135,9 +115,7 @@ bool Renderer::render() {
   if (!glfwWindowShouldClose(window)) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    GLsizei vertexCount = scene->triangles.size()* 3;
-    glDrawArrays(GL_TRIANGLES, 0, vertexCount);
-
+    scene->draw(shaderProgram, vao, vbo, tex);
     glfwSwapBuffers(window);
     glfwPollEvents();
 

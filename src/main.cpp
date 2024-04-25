@@ -1,21 +1,23 @@
 #include "renderer/renderer.h"
 #include "util/definitions.h"
+#include "model/model.h"
 
 #include <stdio.h>
 #include <stdlib.h>
 
 
 int main(int argc, char **argv) {
+  Model model(OBJ_FILE_PATH);
+  // not working yet
+  //model.setTexture(new Texture(""));
+  
   Scene scene;
-  if (!scene.load(OBJ_FILE_PATH)) {
-    return 1;
-  }
+  scene.addModel(model);
 
   Renderer renderer;
   if (!renderer.init()) {
     return 1;
   }
-  renderer.setScene(&scene);
 
-  while (renderer.render()) {}
+  while (renderer.renderScene(&scene)) {}
 }

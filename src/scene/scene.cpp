@@ -7,15 +7,12 @@
 #include <glm/mat4x4.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-bool Scene::load(std::string filename) {
-  Parser parser;
-  if (!parser.parse(filename)) { return false; }
+void Scene::addModel(Model model) {
+  models.push_back(model);
+}
 
-  triangles = parser.getTriangles();
-  if(triangles.size() == 0) {
-    std::cerr << "File contains no triangles" << std::endl;  
-    return false;
+void Scene::draw(unsigned int programId, unsigned int vao, unsigned int vbo, unsigned int tex) {
+  for (Model model : models) {
+    model.draw(programId, vao, vbo, tex);
   }
-
-  return true;
 }

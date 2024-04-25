@@ -7,7 +7,6 @@
 class Renderer {
   private:
   GLFWwindow *window;
-  Scene *scene;
   GLfloat time;
 
   GLuint vao;
@@ -18,6 +17,5 @@ class Renderer {
 
   public:
   bool init();
-  void setScene(Scene *scene);
-  bool render();
+  bool renderScene(Scene *scene);
 };

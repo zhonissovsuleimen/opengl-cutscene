@@ -5,10 +5,18 @@ const char *FRAGMENT_SHADER = R"(
 #version 410 core
 
 in vec3 vColor;
+in vec2 texCoord;
 out vec4 fColor;
 
+uniform bool hasTexture;
+uniform sampler2D tex;
+
 void main() {
-	fColor = vec4(vColor, 1.0);
+  if (hasTexture) {
+    fColor = texture(tex, texCoord);
+  }else {
+    fColor = vec4(vColor, 1.0);
+  }
 }
 
 
