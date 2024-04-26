@@ -1,6 +1,7 @@
 #pragma once
+#include "../util/definitions.h"
 
-const char *VERTEX_SHADER = R"(
+std::string VERTEX_SHADER = R"(
 
 #version 410 core
 
@@ -16,25 +17,31 @@ uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
 uniform float time;
 
-const vec3 Kd = vec3(0.8, 0.8, 0.8); // diffuse reflection coefficient
-const vec3 Ld = vec3(1.0, 1.0, 1.0); // light source intensity
-const vec3 La = vec3(0.5, 0.5, 0.5); // ambient light intensity
+struct Light {
+  vec3 position;
+  vec3 color;
+  float intensity;
+};
+
+const int MAX_LIGHTS = )" + std::to_string(MAX_LIGHTS) + R"(;
+uniform int lightCount;
+uniform Light lights[MAX_LIGHTS];
+uniform vec3 ambient;
 
 void main() {
   vec3 tNorm = normalize(vNormal);
   vec4 tPos = modelMatrix * vPosition;
-  vec3 s = normalize(vec3(viewMatrix * vec4(0, 10.0, 0, 1) - tPos));
+  vColor = ambient;
+  for (int i = 0; i < lightCount && i < MAX_LIGHTS; i++) {
+    vec3 s = normalize(lights[i].position - tPos.xyz);
+    vColor += lights[i].intensity * lights[i].color * max(dot(tNorm, s), 0.0);
+  }
 
-  float angle = time;
-
-  vColor = Ld * Kd * max(dot(tNorm, s), 0.0) + La;
   gl_Position = projectionMatrix *  viewMatrix * modelMatrix * vPosition;
   texCoord = vTexCoord;
 }
 
 
-
-
 )";
 
-const char *const V_SHADER[] = {VERTEX_SHADER};
+const char *const V_SHADER[] = {VERTEX_SHADER.c_str()};
