@@ -24,50 +24,67 @@ bool isFaceDefinition(const std::string& line){
   return line.length() >= 2 && line[0] == 'f' && line[1] == ' ';
 }
 
-void fillVertexCords(const std::string& line, float& x, float& y, float& z){
-  std::string cords = line.substr(1);
-  cords = cords.substr(cords.find_first_not_of(' '));
+void fillBezierCoords(const std::string& line, float& x, float& y, float& z){
+  std::string coords = line.substr(1);
+  coords = coords.substr(coords.find_first_not_of(' '));
 
-  std::string xStr = cords.substr(0, cords.find(' '));
+  std::string xStr = coords.substr(0, coords.find(' '));
   x = std::stof(xStr);
-  cords = cords.substr(cords.find(' '));
-  cords = cords.substr(cords.find_first_not_of(' '));
+  coords = coords.substr(coords.find(' '));
+  coords = coords.substr(coords.find_first_not_of(' '));
 
-  std::string yStr = cords.substr(0, cords.find(' '));
+  std::string yStr = coords.substr(0, coords.find(' '));
   y = std::stof(yStr);
-  cords = cords.substr(cords.find(' '));
-  cords = cords.substr(cords.find_first_not_of(' '));
+  coords = coords.substr(coords.find(' '));
+  coords = coords.substr(coords.find_first_not_of(' '));
 
-  z = std::stof(cords);
+  z = std::stof(coords);
 }
 
-void fillNormalCords(const std::string& line, float& x, float& y, float& z){
-  std::string cords = line.substr(2);
-  cords = cords.substr(cords.find_first_not_of(' '));
+void fillVertexCoords(const std::string& line, float& x, float& y, float& z){
+  std::string coords = line.substr(1);
+  coords = coords.substr(coords.find_first_not_of(' '));
 
-  std::string xCords = cords.substr(0, cords.find(' '));
-  x = std::stof(xCords);
-  cords = cords.substr(cords.find(' '));
-  cords = cords.substr(cords.find_first_not_of(' '));
+  std::string xStr = coords.substr(0, coords.find(' '));
+  x = std::stof(xStr);
+  coords = coords.substr(coords.find(' '));
+  coords = coords.substr(coords.find_first_not_of(' '));
 
-  std::string yCords = cords.substr(0, cords.find(' '));
-  y = std::stof(yCords);
-  cords = cords.substr(cords.find(' '));
-  cords = cords.substr(cords.find_first_not_of(' '));
+  std::string yStr = coords.substr(0, coords.find(' '));
+  y = std::stof(yStr);
+  coords = coords.substr(coords.find(' '));
+  coords = coords.substr(coords.find_first_not_of(' '));
 
-  z = std::stof(cords);
+  z = std::stof(coords);
 }
 
-void fillTextureCords(const std::string& line, float& u, float& v){
-  std::string cords = line.substr(2);
-  cords = cords.substr(cords.find_first_not_of(' '));
+void fillNormalCoords(const std::string& line, float& x, float& y, float& z){
+  std::string coords = line.substr(2);
+  coords = coords.substr(coords.find_first_not_of(' '));
 
-  std::string uStr = cords.substr(0, cords.find(' '));
+  std::string xStr = coords.substr(0, coords.find(' '));
+  x = std::stof(xStr);
+  coords = coords.substr(coords.find(' '));
+  coords = coords.substr(coords.find_first_not_of(' '));
+
+  std::string yStr = coords.substr(0, coords.find(' '));
+  y = std::stof(yStr);
+  coords = coords.substr(coords.find(' '));
+  coords = coords.substr(coords.find_first_not_of(' '));
+
+  z = std::stof(coords);
+}
+
+void fillTextureCoords(const std::string& line, float& u, float& v){
+  std::string coords = line.substr(2);
+  coords = coords.substr(coords.find_first_not_of(' '));
+
+  std::string uStr = coords.substr(0, coords.find(' '));
   u = std::stof(uStr);
-  cords = cords.substr(cords.find(' '));
-  cords = cords.substr(cords.find_first_not_of(' '));
+  coords = coords.substr(coords.find(' '));
+  coords = coords.substr(coords.find_first_not_of(' '));
 
-  v = std::stof(cords);
+  v = std::stof(coords);
 }
 
 void fillCountInfo(std::ifstream& fileStream, unsigned int& vCount, unsigned int& vtCount, unsigned int& vnCount){
@@ -220,17 +237,18 @@ bool containsFaceWithFiveOrMoreVertecies(std::ifstream& fileStream){
   return false;
 }
 
-bool Parser::parse(std::string filename){
+std::vector<Triangle> Parser::parseObj(std::string filename){
+  std::vector<Triangle> triangles;
   std::ifstream fileStream (filename);
   if (!fileStream.is_open()) { 
     std::cerr << "Could not open file " << filename << std::endl;
-    return false;
+    return std::vector<Triangle>();
   }
 
   std::string line;
   if(containsFaceWithFiveOrMoreVertecies(fileStream)){
     std::cerr << "The file contains a face with five or more vertices. Please triangulate the object" << std::endl;
-    return false;
+    return std::vector<Triangle>();
   }
 
   unsigned int vCount = 0;
@@ -254,20 +272,20 @@ bool Parser::parse(std::string filename){
 
       if (isVertexDefinition(line)) {
         float x,y,z;
-        fillVertexCords(line, x, y, z);
+        fillVertexCoords(line, x, y, z);
         vCache[v][0] = x;
         vCache[v][1] = y;
         vCache[v][2] = z;
         v++;
       } else if (isTextureDefinition(line)) {
         float u,v;
-        fillTextureCords(line, u, v);
+        fillTextureCoords(line, u, v);
         vtCache[vt][0] = u;
         vtCache[vt][1] = v;
         vt++;
       } else if (isNormalDefinition(line)) {
         float x,y,z;
-        fillNormalCords(line, x, y, z);
+        fillNormalCoords(line, x, y, z);
         vnCache[vn][0] = x;
         vnCache[vn][1] = y;
         vnCache[vn][2] = z;
@@ -287,8 +305,42 @@ bool Parser::parse(std::string filename){
   }
 
   fileStream.close();
+  return triangles;
 }
 
-std::vector<Triangle>& Parser::getTriangles() {
-  return triangles;
+std::vector<Bezier> Parser::parseBezier(std::string filename) {
+  std::vector<Bezier> beziers;
+
+  std::ifstream fileStream (filename);
+  if (!fileStream.is_open()) { 
+    std::cerr << "Could not open file " << filename << std::endl;
+    return std::vector<Bezier>();
+  }
+
+
+  unsigned i = 0;  
+  std::string line;
+  while (!fileStream.eof()) {
+    while (std::getline(fileStream, line)) {
+      glm::vec3 start, control1, control2, end;
+
+      float x, y, z;
+      fillBezierCoords(line, x, y, z);
+      if(i % 4 == 0){
+        start = glm::vec3(x, y, z);
+      } else if(i % 4 == 1){
+        control1 = glm::vec3(x, y, z);
+      } else if(i % 4 == 2){
+        control2 = glm::vec3(x, y, z);
+      } else if(i % 4 == 3){
+        end = glm::vec3(x, y, z);
+      }
+      beziers.push_back({start, control1, control2, end});
+
+      i++;
+    }
+  }
+
+  fileStream.close();
+  return beziers;
 }

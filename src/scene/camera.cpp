@@ -10,6 +10,20 @@ Camera::Camera() {
   up = glm::vec3(0.0f, 1.0f, 0.0f);
 }
 
+Camera::Camera(const std::string& path, glm::vec3 up) {
+  this->up = up;
+  motionPath = Parser::parseBezier(path);
+
+  if(motionPath.size() > 0) {
+    position = motionPath[0].start;
+    if(motionPath.size() > 1) {
+      direction = motionPath[1].start - position;
+    } else {
+      direction = glm::vec3(0.0f, 0.0f, 1.0f);
+    }
+  }
+}
+
 Camera::Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up) {
   this->position = position;
   this->direction = direction;

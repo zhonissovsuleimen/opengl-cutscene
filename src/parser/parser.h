@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include "glm/vec3.hpp"
 
 struct Vertex
 {
@@ -24,11 +25,16 @@ struct Triangle
   Vertex v3;
 };
 
+struct Bezier
+{
+  glm::vec3 start;
+  glm::vec3 control1;
+  glm::vec3 control2;
+  glm::vec3 end;
+};
 
-class Parser {
-  private:
-    std::vector<Triangle> triangles;
-  public:
-    bool parse(std::string filename);
-    std::vector<Triangle>& getTriangles();
+static class Parser {
+public:
+  static std::vector<Triangle> parseObj(std::string filename);
+  static std::vector<Bezier> parseBezier(std::string filename);
 }; 

@@ -9,9 +9,7 @@
 
 
 Model::Model(const std::string& path) : path(path), modelMatrix(glm::mat4(1.0f)), texture(nullptr), hasTexture(false) {
-  Parser parser;
-  parser.parse(path);
-  triangles = parser.getTriangles(); 
+  triangles = Parser::parseObj(path);
 }
 
 Model::~Model() {
