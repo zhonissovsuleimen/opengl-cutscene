@@ -3,6 +3,7 @@
 #include "../util/definitions.h"
 #include "camera.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <iostream>
 
 Camera::Camera() {
   position = glm::vec3(0.0f, 0.0f, 0.0f);
@@ -37,8 +38,35 @@ void Camera::setTime(float time) {
   this->time = time;
 }
 
+glm::vec3 getDeCasteljauPoint(Bezier& bezier, float t) {
+  std::vector<glm::vec3> points = {bezier.start, bezier.control1, bezier.control2, bezier.end};
+  while (points.size() > 1) {
+    std::vector<glm::vec3> newPoints;
+    for (int i = 0; i < points.size() - 1; i++) {
+      newPoints.push_back(points[i] * (1 - t) + points[i + 1] * t);
+    }
+    points = newPoints;
+  }
+  return points[0];
+}
+
+void Camera::animate(float t) {
+  if (motionPath.size() == 0 || t > 1.0f || t < 0.0f) { return; }
+
+  int ibezier = (t * motionPath.size());
+  float miniT = t * motionPath.size() - ibezier;
+  position = getDeCasteljauPoint(motionPath[ibezier], miniT);
+
+  float nextT = t + 0.01f;
+  if (nextT > 1.0f) { return; }
+
+  ibezier = (nextT * motionPath.size());
+  miniT = nextT * motionPath.size() - ibezier;
+  direction = getDeCasteljauPoint(motionPath[ibezier], miniT) - position;
+}
+
 glm::mat4x4 Camera::getViewMatrix() {
-  return glm::lookAt(position, direction, up);
+  return glm::lookAt(position, position + direction, up);
 }
 
 glm::mat4x4 Camera::getProjectionMatrix() {

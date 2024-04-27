@@ -334,8 +334,8 @@ std::vector<Bezier> Parser::parseBezier(std::string filename) {
         control2 = glm::vec3(x, y, z);
       } else if(i % 4 == 3){
         end = glm::vec3(x, y, z);
+        beziers.push_back({start, control1, control2, end});
       }
-      beziers.push_back({start, control1, control2, end});
 
       i++;
     }

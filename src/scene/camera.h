@@ -24,6 +24,7 @@ public:
   Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up);
 
   void setTime(float time);
+  void animate(float t); // t = [0..1]
 
   glm::mat4x4 getViewMatrix();
   glm::mat4x4 getProjectionMatrix();
