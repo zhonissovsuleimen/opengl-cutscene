@@ -104,7 +104,6 @@ bool Renderer::init() {
 }
 
 bool Renderer::renderScene(Scene *scene) {
-  scene->camera.position.z -= 0.01f;
   int location = glGetUniformLocation(shaderProgram, "viewMatrix");
   glUniformMatrix4fv(location, 1, GL_FALSE, glm::value_ptr(scene->camera.getViewMatrix()));
   location = glGetUniformLocation(shaderProgram, "projectionMatrix");
@@ -119,7 +118,6 @@ bool Renderer::renderScene(Scene *scene) {
     glfwSwapBuffers(window);
     glfwPollEvents();
 
-    time+= .01;
     return true;
   } else {
     glfwDestroyWindow(window);

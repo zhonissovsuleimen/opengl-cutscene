@@ -31,13 +31,6 @@ Camera::Camera(glm::vec3 position, glm::vec3 direction, glm::vec3 up) {
   this->up = up;
 }
 
-void Camera::setTime(float time) {
-  if (time < 0.0f) { time = 0.0f; }
-  if (time > 1.0f) { time = 1.0f; }
-
-  this->time = time;
-}
-
 glm::vec3 getDeCasteljauPoint(Bezier& bezier, float t) {
   std::vector<glm::vec3> points = {bezier.start, bezier.control1, bezier.control2, bezier.end};
   while (points.size() > 1) {

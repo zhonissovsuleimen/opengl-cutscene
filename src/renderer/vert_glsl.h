@@ -37,7 +37,7 @@ void main() {
     vColor += lights[i].intensity * lights[i].color * max(dot(tNorm, s), 0.0);
   }
 
-  gl_Position = projectionMatrix *  viewMatrix * modelMatrix * vPosition;
+  gl_Position = projectionMatrix * viewMatrix * tPos;
   texCoord = vTexCoord;
 }
 

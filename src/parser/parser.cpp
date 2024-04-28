@@ -317,7 +317,6 @@ std::vector<Bezier> Parser::parseBezier(std::string filename) {
     return std::vector<Bezier>();
   }
 
-
   unsigned i = 0;  
   std::string line;
   while (!fileStream.eof()) {
@@ -327,13 +326,13 @@ std::vector<Bezier> Parser::parseBezier(std::string filename) {
       float x, y, z;
       fillBezierCoords(line, x, y, z);
       if(i % 4 == 0){
-        start = glm::vec3(x, y, z);
+        start = glm::vec3(-x, z, y);
       } else if(i % 4 == 1){
-        control1 = glm::vec3(x, y, z);
+        control1 = glm::vec3(-x, z, y);
       } else if(i % 4 == 2){
-        control2 = glm::vec3(x, y, z);
+        control2 = glm::vec3(-x, z, y);
       } else if(i % 4 == 3){
-        end = glm::vec3(x, y, z);
+        end = glm::vec3(-x, z, y);
         beziers.push_back({start, control1, control2, end});
       }
 
