@@ -3,7 +3,6 @@
 #include "../parser/parser.h"
 #include "../model/model.h"
 #include "camera.h"
-#include "light.h"
 #include <vector>
 #include <string>
 

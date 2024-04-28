@@ -41,6 +41,21 @@ void fillBezierCoords(const std::string& line, float& x, float& y, float& z){
   z = std::stof(coords);
 }
 
+void fillLightCoords(const std::string& line, float& x, float& y, float& z){
+  std::string coords = line;
+  std::string xStr = line.substr(0, coords.find(' '));
+  x = std::stof(xStr);
+  coords = coords.substr(coords.find(' '));
+  coords = coords.substr(coords.find_first_not_of(' '));
+
+  std::string yStr = coords.substr(0, coords.find(' '));
+  y = std::stof(yStr);
+  coords = coords.substr(coords.find(' '));
+  coords = coords.substr(coords.find_first_not_of(' '));
+
+  z = std::stof(coords);
+}
+
 void fillVertexCoords(const std::string& line, float& x, float& y, float& z){
   std::string coords = line.substr(1);
   coords = coords.substr(coords.find_first_not_of(' '));
@@ -342,4 +357,27 @@ std::vector<Bezier> Parser::parseBezier(std::string filename) {
 
   fileStream.close();
   return beziers;
+}
+
+std::vector<Light> Parser::parseLightCoords(std::string filename) {
+  std::vector<Light> lights;
+
+  std::ifstream fileStream (filename);
+  if (!fileStream.is_open()) { 
+    std::cerr << "Could not open file " << filename << std::endl;
+    return std::vector<Light>();
+  }
+
+  std::string line;
+  while (!fileStream.eof()) {
+    while (std::getline(fileStream, line)) {
+      float x, y, z;
+      fillLightCoords(line, x, y, z);
+
+      lights.push_back({glm::vec3(-x, z, y), glm::vec3(1.0f, 1.0f, 1.0f), 1.0f});
+    }
+  }
+
+  fileStream.close();
+  return lights;
 }
