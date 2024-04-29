@@ -341,13 +341,13 @@ std::vector<Bezier> Parser::parseBezier(std::string filename) {
       float x, y, z;
       fillBezierCoords(line, x, y, z);
       if(i % 4 == 0){
-        start = glm::vec3(-x, z, y);
+        start = glm::vec3(x, z, -y);
       } else if(i % 4 == 1){
-        control1 = glm::vec3(-x, z, y);
+        control1 = glm::vec3(x, z, -y);
       } else if(i % 4 == 2){
-        control2 = glm::vec3(-x, z, y);
+        control2 = glm::vec3(x, z, -y);
       } else if(i % 4 == 3){
-        end = glm::vec3(-x, z, y);
+        end = glm::vec3(x, z, -y);
         beziers.push_back({start, control1, control2, end});
       }
 
