@@ -253,10 +253,11 @@ bool containsFaceWithFiveOrMoreVertecies(std::ifstream& fileStream){
 }
 
 std::vector<Triangle> Parser::parseObj(std::string filename){
+  std::cout << "Parser: parsing OBJ file: " << filename << std::endl;
   std::vector<Triangle> triangles;
   std::ifstream fileStream (filename);
   if (!fileStream.is_open()) { 
-    std::cerr << "Could not open file " << filename << std::endl;
+    std::cerr << "Could not open file" << filename << std::endl;
     return std::vector<Triangle>();
   }
 
@@ -320,10 +321,12 @@ std::vector<Triangle> Parser::parseObj(std::string filename){
   }
 
   fileStream.close();
+  std::cout << "Parser: parsing OBJ file complete" << std::endl;
   return triangles;
 }
 
 std::vector<Bezier> Parser::parseBezier(std::string filename) {
+  std::cout << "Parser: parsing Bezier file: " << filename << std::endl;
   std::vector<Bezier> beziers;
 
   std::ifstream fileStream (filename);
@@ -356,10 +359,12 @@ std::vector<Bezier> Parser::parseBezier(std::string filename) {
   }
 
   fileStream.close();
+  std::cout << "Parser: parsing Bezier file complete" << std::endl;
   return beziers;
 }
 
 std::vector<Light> Parser::parseLightCoords(std::string filename) {
+  std::cout << "Parser: parsing light coordinates file: " << filename << std::endl;
   std::vector<Light> lights;
 
   std::ifstream fileStream (filename);
@@ -379,5 +384,6 @@ std::vector<Light> Parser::parseLightCoords(std::string filename) {
   }
 
   fileStream.close();
+  std::cout << "Parser: parsing light coordinates file: " << filename << std::endl;
   return lights;
 }

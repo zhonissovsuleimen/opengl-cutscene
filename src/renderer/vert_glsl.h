@@ -1,5 +1,6 @@
 #pragma once
 #include "../util/definitions.h"
+#include <string>
 
 std::string VERTEX_SHADER = R"(
 
@@ -15,7 +16,6 @@ out vec2 texCoord;
 uniform mat4 modelMatrix;
 uniform mat4 viewMatrix;
 uniform mat4 projectionMatrix;
-uniform float time;
 
 struct Light {
   vec3 position;
