@@ -27,7 +27,7 @@ bool Renderer::initShaders(){
 
   //Checking for errors
   GLint status;
-  glGetProgramiv(vertexShader, GL_COMPILE_STATUS, &status);
+  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &status);
   if (status != GL_TRUE) {
     char infolog[512];
     glGetProgramInfoLog(vertexShader, 512, NULL, infolog);
@@ -44,7 +44,7 @@ bool Renderer::initShaders(){
   glCompileShader(fragmentShader);
 
   //Checking for errors
-  glGetProgramiv(fragmentShader, GL_COMPILE_STATUS, &status);
+  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &status);
   if (status != GL_TRUE) {
     char infolog[512];
     glGetProgramInfoLog(fragmentShader, 512, NULL, infolog);
